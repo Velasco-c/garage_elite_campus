@@ -10,11 +10,11 @@ DROP TABLE IF EXISTS servicios;
 
 CREATE TABLE clientes (
   id INT AUTO_INCREMENT PRIMARY KEY,
-  nombres VARCHAR(120) NOT NULL UNIQUE,
-  apellidos VARCHAR(120) NOT NULL UNIQUE,
-  telefono VARCHAR(10) NOT NULL,
+  nombres VARCHAR(120) NOT NULL,
+  apellidos VARCHAR(120) NOT NULL,
+  telefono VARCHAR(20) NOT NULL,
   email VARCHAR(120) NOT NULL UNIQUE,
-  estado VARCHAR(25),
+  estado VARCHAR(25) CHECK(estado IN ('Activo','Inactivo')),
   fecha_creacion DATE NOT NULL,
   cantidad_vehiculos INT NOT NULL CHECK(cantidad_vehiculos > 0 )
 )ENGINE=InnoDB;
@@ -22,9 +22,9 @@ CREATE TABLE clientes (
 CREATE TABLE vehiculos (
   id INT AUTO_INCREMENT PRIMARY KEY,
   nombres VARCHAR(120) NOT NULL,
-  tipo VARCHAR(25) PRIMARY KEY,
+  tipo VARCHAR(25) NOT NULL,
   marca VARCHAR(80) NOT NULL,
-  modelo VARCHAR(20) NOT NULL,
+  modelo VARCHAR(80) NOT NULL,
   placa VARCHAR(100) NOT NULL UNIQUE,
   anio DATE,
   cliente_id INT NOT NULL,
@@ -33,8 +33,8 @@ CREATE TABLE vehiculos (
 
 CREATE TABLE mecanicos (
   id INT AUTO_INCREMENT PRIMARY KEY,
-  nombres VARCHAR(120) NOT NULL UNIQUE,
-  apellidos VARCHAR(120) NOT NULL UNIQUE,
+  nombres VARCHAR(120) NOT NULL,
+  apellidos VARCHAR(120) NOT NULL,
   activo BOOLEAN DEFAULT TRUE,
   especialidad VARCHAR(120) NOT NULL UNIQUE
 )ENGINE=InnoDB;
@@ -43,16 +43,15 @@ CREATE TABLE servicios (
   id INT AUTO_INCREMENT PRIMARY KEY,
   nombres VARCHAR(120) NOT NULL,
   categoria VARCHAR(120) NOT NULL,
-  precio DECIMAL(10.2) NOT NULL CHECK(precio > 1),
-  duracion VARCHAR(120) NOT NULL,
-  estado VARCHAR(25) NOT NULL,
-  disponible BOOLEAN DEFAULT TRUE
-)ENGINE=InnoDB;
+  precio DECIMAL(10,2) NOT NULL CHECK(precio > 1),
+  duracion VARCHAR(100) NOT NULL,
+  estado VARCHAR(25) NOT NULL CHECK(estado IN ('Disponible','Suspendido'))
+  )ENGINE=InnoDB;
 
-CREATE TABLE detalle_reservacion (
+CREATE TABLE detalles_reservacion (
   id INT AUTO_INCREMENT PRIMARY KEY,
   descripcion VARCHAR(180) NOT NULL,
-  estado VARCHAR(50) NOT NULL,
+  estado VARCHAR(50) NOT NULL CHECK(estado IN ('Pendiente','En proceso','Finalizado','Cancelado')),
   vehiculo_id INT NOT NULL,
   FOREIGN KEY (vehiculo_id) REFERENCES vehiculos(id)
 )ENGINE=InnoDB;
@@ -64,9 +63,9 @@ CREATE TABLE citas_servicios(
   fk_id_servicio INT NOT NULL,
   fk_id_detalles_reservacion INT NOT NULL,
   fecha_programada DATE,
-  precio_final DECIMAL(10.2),
+  precio_final DECIMAL(10,2) CHECK(precio_final>=0),
   FOREIGN KEY (fk_id_vehiculo) REFERENCES vehiculos(id),
   FOREIGN KEY (fk_id_mecanico) REFERENCES mecanicos(id),
   FOREIGN KEY (fk_id_servicio) REFERENCES servicios(id),
-  FOREIGN KEY (fk_id_detalles_reservacion) REFERENCES detalle_reservacion(id)
+  FOREIGN KEY (fk_id_detalles_reservacion) REFERENCES detalles_reservacion(id)
 )ENGINE=InnoDB;
