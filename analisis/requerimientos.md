@@ -21,6 +21,7 @@
 | ---------- | ------------ | --------------------------------- |
 | id         | INT          | Identificador del vehículo (PK).  |
 | nombre     | VARCHAR(120) | Nombre o referencia del vehículo. |
+| tipo       | VARCHAR(25)  | Tipo del vehículo. |
 | marca      | VARCHAR(80)  | Marca del vehículo.               |
 | modelo     | VARCHAR(20)  | Modelo.                           |
 | placa      | VARCHAR(120) | Placa del vehículo.               |
