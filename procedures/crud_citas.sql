@@ -214,3 +214,191 @@ BEGIN
 END//
 
 DELIMITER ;
+
+
+-- ============================================================
+-- PRUEBAS DE PROCEDIMIENTOS
+-- ============================================================
+
+USE garage_elite_campus;
+
+
+-- ============================================================
+-- 1. CREAR CITA
+-- ============================================================
+
+CALL sp_crear_cita_servicio(
+    1,
+    2,
+    1,
+    '2026-08-17 09:00:00',
+    450.00,
+    'Revision del sistema de frenos',
+    @nueva_cita
+);
+
+SELECT @nueva_cita AS cita_creada_id;
+
+
+-- ============================================================
+-- 2. LISTAR CITAS PENDIENTES
+-- ============================================================
+
+CALL sp_listar_citas_servicio('pendiente');
+
+
+-- ============================================================
+-- 3. ACTUALIZAR CITA
+-- ============================================================
+
+CALL sp_actualizar_cita_servicio(
+    @nueva_cita,
+    2,
+    '2026-08-17 10:00:00',
+    'en_proceso',
+    500.00,
+    'Cliente autorizo ajuste de ultima hora'
+);
+
+
+-- Comprobar la actualizacion
+
+CALL sp_listar_citas_servicio('en_proceso');
+
+
+-- ============================================================
+-- 4. CANCELAR CITA
+-- ============================================================
+
+CALL sp_cancelar_cita_servicio(
+    @nueva_cita,
+    'Cliente reprogramara para el proximo mes'
+);
+
+
+-- Comprobar la cancelacion
+
+CALL sp_listar_citas_servicio('cancelada');
+
+
+-- ============================================================
+-- 5. CREAR CITA PARA PROBAR ELIMINACION FISICA
+-- ============================================================
+
+CALL sp_crear_cita_servicio(
+    10,
+    1,
+    8,
+    '2026-08-20 10:00:00',
+    250.00,
+    'Cita de prueba para eliminacion fisica',
+    @cita_borrador
+);
+
+SELECT @cita_borrador AS cita_borrador_id;
+
+
+-- ============================================================
+-- 6. ELIMINAR CITA PENDIENTE
+-- ============================================================
+
+CALL sp_eliminar_cita_borrador(@cita_borrador);
+
+
+-- Comprobar que ya no existe
+
+SELECT *
+FROM citas_servicio
+WHERE id = @cita_borrador;
+
+
+-- ============================================================
+-- PRUEBAS DE ERROR CONTROLADO
+-- ============================================================
+
+
+-- ============================================================
+-- 7. PRECIO NEGATIVO
+-- Resultado esperado:
+-- Error: El precio final no puede ser negativo ni nulo.
+-- ============================================================
+
+CALL sp_crear_cita_servicio(
+    1,
+    1,
+    1,
+    '2026-08-18 10:00:00',
+    -100.00,
+    'Prueba precio negativo',
+    @cita_error
+);
+
+
+-- ============================================================
+-- 8. MECANICO INACTIVO
+-- El mecanico 7 esta configurado como inactivo.
+--
+-- Resultado esperado:
+-- Error: El mecanico asignado no se encuentra activo.
+-- ============================================================
+
+CALL sp_crear_cita_servicio(
+    1,
+    1,
+    7,
+    '2026-08-18 10:00:00',
+    250.00,
+    'Prueba mecanico inactivo',
+    @cita_error
+);
+
+
+-- ============================================================
+-- 9. MODIFICAR CITA CANCELADA
+-- @nueva_cita fue cancelada anteriormente.
+--
+-- Resultado esperado:
+-- Error: No se puede modificar una cita que ya ha sido cancelada.
+-- ============================================================
+
+CALL sp_actualizar_cita_servicio(
+    @nueva_cita,
+    1,
+    '2026-08-19 10:00:00',
+    'en_proceso',
+    500.00,
+    'Intento ilegal de edicion'
+);
+
+
+-- ============================================================
+-- 10. CANCELAR CITA COMPLETADA
+-- La cita 2 fue cargada inicialmente como completada.
+--
+-- Resultado esperado:
+-- Error: No se puede cancelar una cita que ya fue completada.
+-- ============================================================
+
+CALL sp_cancelar_cita_servicio(
+    2,
+    'Intento de cancelar cita completada'
+);
+
+
+-- ============================================================
+-- 11. ELIMINAR CITA QUE NO ESTA PENDIENTE
+-- La cita 2 esta completada.
+--
+-- Resultado esperado:
+-- Error: Solo se pueden eliminar fisicamente citas
+-- en estado pendiente.
+-- ============================================================
+
+CALL sp_eliminar_cita_borrador(2);
+
+
+-- ============================================================
+-- 12. CONSULTAR TODAS LAS CITAS
+-- ============================================================
+
+CALL sp_listar_citas_servicio(NULL);
