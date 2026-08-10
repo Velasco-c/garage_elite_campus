@@ -1,4 +1,4 @@
-USE campuslands_mysql;
+USE garage_elite_campus;
 
 DELIMITER //
 
