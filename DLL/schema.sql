@@ -1,6 +1,6 @@
-DROP DATABASE IF EXISTS campuslands_mysql;
-CREATE DATABASE campuslands_mysql;
-USE campuslands_mysql;
+DROP DATABASE IF EXISTS garage_elite_campus;
+CREATE DATABASE garage_elite_campus;
+USE garage_elite_campus;
 
 DROP TABLE IF EXISTS citas_servicio;
 DROP TABLE IF EXISTS vehiculos;

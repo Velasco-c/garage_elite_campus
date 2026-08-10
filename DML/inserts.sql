@@ -1,4 +1,4 @@
-USE campuslands_mysql;
+USE garage_elite_campus;
 
 -- CLIENTES (10 registros)
 INSERT INTO clientes (nombres, apellidos, telefono, email, estado, creado_en) VALUES
