@@ -39,18 +39,22 @@ INSERT INTO mecanicos (nombres, apellidos, activo, especialidad) VALUES
 ('Andres Felipe', 'Lopez Herrera', TRUE, 'Mecanica de motocicletas'),
 ('Diego Estuardo', 'Velasquez Ortiz', TRUE, 'Alineacion y balanceo');
 
--- SERVICIOS (10 registros)
-INSERT INTO servicios (nombre, categoria, precio_base, duracion_min, estado) VALUES
-('Cambio de aceite', 'Mantenimiento', 250.00, 30, 'Disponible'),
-('Servicio de frenos', 'Frenos', 450.00, 60, 'Disponible'),
-('Alineacion y balanceo', 'Llantas', 180.00, 45, 'Disponible'),
-('Cambio de llantas', 'Llantas', 150.00, 40, 'Disponible'),
-('Diagnostico computarizado', 'Electronica', 300.00, 40, 'Disponible'),
-('Afinacion de motor', 'Motor', 700.00, 120, 'Disponible'),
-('Cambio de bateria', 'Electricidad', 850.00, 20, 'Disponible'),
-('Revision de suspension', 'Suspension', 500.00, 90, 'Disponible'),
-('Lavado completo', 'Estetica', 120.00, 60, 'Disponible'),
-('Servicio mayor', 'Mantenimiento', 1200.00, 240, 'Disponible');
+-- CITAS_SERVICIO (10 registros)
+INSERT INTO citas_servicio (vehiculo_id, servicio_id, mecanico_id, fecha_programada, estado, precio_final, notas) VALUES
+(1, 1, 1, '2026-08-07 15:30:00', 'pendiente', 250.00, 'Cambio de aceite y revision general del motor'),
+(2, 2, 2, '2026-08-08 09:00:00', 'completada', 450.00, 'Cambio de pastillas y revision del sistema de frenos'),
+(3, 3, 3, '2026-08-09 10:00:00', 'en_proceso', 180.00, 'Alineacion de direccion y balanceo de las cuatro ruedas'),
+(4, 4, 4, '2026-08-10 11:30:00', 'pendiente', 150.00, 'Reemplazo de llantas desgastadas'),
+(5, 5, 5, '2026-08-11 14:00:00', 'completada', 300.00, 'Diagnostico computarizado del sistema electronico'),
+(6, 6, 6, '2026-08-12 16:00:00', 'en_proceso', 700.00, 'Afinacion completa del motor y revision de componentes'),
+(7, 7, 1, '2026-08-13 08:30:00', 'pendiente', 850.00, 'Reemplazo de bateria y revision del sistema electrico'),
+(8, 8, 3, '2026-08-14 10:30:00', 'cancelada', 500.00, 'Cliente cancelo la cita por viaje'),
+(9, 9, 9, '2026-08-15 13:00:00', 'completada', 120.00, 'Lavado completo exterior e interior del vehiculo'),
+(10, 10, 8, '2026-08-16 15:00:00', 'en_proceso', 1200.00, 'Servicio mayor con revision de transmision y componentes');
+
+-- CITA ADICIONAL PARA PROBAR VEHICULOS CON MAS DE UNA CITA
+INSERT INTO citas_servicio (vehiculo_id, servicio_id, mecanico_id, fecha_programada, estado, precio_final, notas) VALUES
+(1, 6, 6, '2026-08-17 09:00:00', 'pendiente', 700.00, 'Afinacion de motor posterior al mantenimiento preventivo');
 
 -- CITAS_SERVICIO (10 registros con estados estandarizados)
 INSERT INTO citas_servicio (vehiculo_id, servicio_id, mecanico_id, fecha_programada, estado, precio_final, notas) VALUES
